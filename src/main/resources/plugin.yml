@@ -1,0 +1,6 @@
+name: Heaven
+version: ${project.version}
+main: com.ozoromo.heaven.Heaven
+authors: [ozoromo]
+description: Player height based dimension change
+depend: [Multiverse-Core]
