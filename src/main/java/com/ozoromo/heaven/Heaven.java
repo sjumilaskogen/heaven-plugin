@@ -43,24 +43,6 @@ public class Heaven extends JavaPlugin {
         }, 100, 20*config.getInt("Height-check-delay-in-seconds"));
     }
 
-    public int playerWorldHash (Player player) {
-        int WorldHash = player.getWorld().getName().hashCode();
-        return(WorldHash);
-    }
-
-    public int heavenHash () {
-        int heaven = config.getString("Heaven-Dimension-Name").hashCode();
-        return(heaven);
-    }
-
-    public void teleport (Player player, String dimension) {
-        if(config.getBoolean("Relative-teleport")) {
-            Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "mv tp " + player.getDisplayName() + " e:" + dimension + ":" + player.getLocation().getBlockX() + "," + player.getLocation().getBlockY() + "," + player.getLocation().getBlockZ());
-        }else if(!config.getBoolean("Relative-teleport")) {
-            Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "mv tp " + player.getDisplayName() + " " + dimension);
-        }
-    }
-
     public void SetupConfig () {
         config.addDefault("heaven-height", 250);
         config.addDefault("Height-check-delay-in-seconds", 5);
@@ -72,5 +54,20 @@ public class Heaven extends JavaPlugin {
         saveConfig();
     }
 
+    public int playerWorldHash (Player player) {
+        return(player.getWorld().getName().hashCode());
+    }
+    public int heavenHash () {
+        return(config.getString("Heaven-Dimension-Name").hashCode());
+    }
+
+    public void teleport (Player player, String dimension) {
+        if(config.getBoolean("Relative-teleport")) {
+            Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "mv tp " + player.getDisplayName() + " e:" + dimension + ":" + player.getLocation().getBlockX() + "," + player.getLocation().getBlockY() + "," + player.getLocation().getBlockZ());
+        }else if(!config.getBoolean("Relative-teleport")) {
+            Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "mv tp " + player.getDisplayName() + " " + dimension);
+        }
+    }
+    
 }
 
