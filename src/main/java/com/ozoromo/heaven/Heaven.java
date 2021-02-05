@@ -2,6 +2,8 @@ package com.ozoromo.heaven;
 
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -49,7 +51,7 @@ public class Heaven extends JavaPlugin {
         config.addDefault("Heaven-Dimension-Name", "Heaven");
         config.addDefault("Teleport-Message", "You are now in heaven");
         config.addDefault("Teleport-failed-Message", "You are already in heaven!");
-        config.addDefault("Relative-teleport", false);
+        config.addDefault("Relative-teleport-DO-NOT-USE", false);
         config.options().copyDefaults(true);
         saveConfig();
     }
@@ -63,11 +65,13 @@ public class Heaven extends JavaPlugin {
 
     public void teleport (Player player, String dimension) {
         if(config.getBoolean("Relative-teleport")) {
-            Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "mv tp " + player.getDisplayName() + " e:" + dimension + ":" + player.getLocation().getBlockX() + "," + player.getLocation().getBlockY() + "," + player.getLocation().getBlockZ());
+            //Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "mv tp " + player.getDisplayName() + " e:" + dimension + ":" + player.getLocation().getBlockX() + "," + player.getLocation().getBlockY() + "," + player.getLocation().getBlockZ());
+            player.sendMessage(ChatColor.RED + "Teleporting with relative coordinates is not yet implemented, revert the config value to false and reload.");
         }else if(!config.getBoolean("Relative-teleport")) {
-            Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "mv tp " + player.getDisplayName() + " " + dimension);
+            //Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "mv tp " + player.getDisplayName() + " " + dimension);
+            Location HeavenSpawn = Bukkit.getServer().getWorld(dimension).getSpawnLocation();
+            player.teleport(HeavenSpawn);
         }
     }
-    
 }
 
