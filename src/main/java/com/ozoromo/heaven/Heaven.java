@@ -1,10 +1,7 @@
 package com.ozoromo.heaven;
 
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.Location;
+import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -28,6 +25,12 @@ public class Heaven extends JavaPlugin {
 
         SetupConfig();
 
+        if(config.getBoolean("Relative-teleport")) {
+            log.info(ChatColor.RED + "Relative teleport is enabled, this could lead to problems. If problems are encountered try disabling in in the config");
+        }
+
+        World HeavenWorld = Bukkit.getServer().getWorld(config.getString("Heaven-Dimension-Name"));
+
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
             public void run() {
                 for(Player player : Bukkit.getOnlinePlayers()) {
@@ -36,7 +39,7 @@ public class Heaven extends JavaPlugin {
                         if (playerWorldHash(player) == heavenHash()) {
                             player.sendMessage(config.getString("Teleport-failed-Message"));
                         }else if (playerWorldHash(player) != heavenHash()) {
-                            teleport(player, config.getString("Heaven-Dimension-Name"));
+                            teleport(player, HeavenWorld);
                             player.sendMessage(config.getString("Teleport-Message"));
                         }
                     }
@@ -51,7 +54,7 @@ public class Heaven extends JavaPlugin {
         config.addDefault("Heaven-Dimension-Name", "Heaven");
         config.addDefault("Teleport-Message", "You are now in heaven");
         config.addDefault("Teleport-failed-Message", "You are already in heaven!");
-        config.addDefault("Relative-teleport-DO-NOT-USE", false);
+        config.addDefault("Relative-teleport", false);
         config.options().copyDefaults(true);
         saveConfig();
     }
@@ -63,15 +66,21 @@ public class Heaven extends JavaPlugin {
         return(config.getString("Heaven-Dimension-Name").hashCode());
     }
 
-    public void teleport (Player player, String dimension) {
+    public void teleport (Player player, World HeavenWorld) {
         if(config.getBoolean("Relative-teleport")) {
-            //Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "mv tp " + player.getDisplayName() + " e:" + dimension + ":" + player.getLocation().getBlockX() + "," + player.getLocation().getBlockY() + "," + player.getLocation().getBlockZ());
-            player.sendMessage(ChatColor.RED + "Teleporting with relative coordinates is not yet implemented, revert the config value to false and reload.");
+            Location RelativeHeaven = HeavenWorld.getSpawnLocation();
+
+            RelativeHeaven.setX(player.getLocation().getBlockX());
+            RelativeHeaven.setZ(player.getLocation().getBlockZ());
+            RelativeHeaven.setY(HeavenWorld.getHighestBlockYAt(RelativeHeaven));
+
+            player.teleport(RelativeHeaven);
+
         }else if(!config.getBoolean("Relative-teleport")) {
-            //Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "mv tp " + player.getDisplayName() + " " + dimension);
-            Location HeavenSpawn = Bukkit.getServer().getWorld(dimension).getSpawnLocation();
+            Location HeavenSpawn = HeavenWorld.getSpawnLocation();
             player.teleport(HeavenSpawn);
         }
     }
 }
+
 
