@@ -72,7 +72,7 @@ public class Heaven extends JavaPlugin {
 
             RelativeHeaven.setX(player.getLocation().getBlockX());
             RelativeHeaven.setZ(player.getLocation().getBlockZ());
-            RelativeHeaven.setY(HeavenWorld.getHighestBlockYAt(RelativeHeaven));
+            RelativeHeaven.setY(HeavenWorld.getHighestBlockYAt(RelativeHeaven)+1);
 
             player.teleport(RelativeHeaven);
 
