@@ -30,10 +30,12 @@ public class Heaven extends JavaPlugin {
         }
 
         World HeavenWorld = Bukkit.getServer().getWorld(config.getString("Heaven-Dimension-Name"));
+        World EarthWorld = Bukkit.getServer().getWorld(config.getString("Earth-Dimension-Name"));
 
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
             public void run() {
                 for(Player player : Bukkit.getOnlinePlayers()) {
+                    
                     if(player.getLocation().getBlockY() >= config.getInt("heaven-height")) {
 
                         if (playerWorldHash(player) == heavenHash()) {
@@ -43,15 +45,27 @@ public class Heaven extends JavaPlugin {
                             player.sendMessage(config.getString("Teleport-Message"));
                         }
                     }
+                    if(player.getLocation().getBlockY() >= config.getInt("earth-height")) {
+
+                        if (playerWorldHash(player) == heavenHash()) {
+                            player.sendMessage(config.getString("Teleport-failed-Message"));
+                        }else if (playerWorldHash(player) != heavenHash()) {
+                            teleport(player, EarthWorld);
+                            player.sendMessage(config.getString("Teleport-Message"));
+                        }
+                    }
+                    
                 }
             }
         }, 100, 20*config.getInt("Height-check-delay-in-seconds"));
     }
 
     public void SetupConfig () {
-        config.addDefault("heaven-height", 250);
-        config.addDefault("Height-check-delay-in-seconds", 5);
-        config.addDefault("Heaven-Dimension-Name", "Heaven");
+        config.addDefault("heaven-height", 300);
+        config.addDefault("earth-height", -5);
+        config.addDefault("Height-check-delay-in-seconds", 1);
+        config.addDefault("Heaven-Dimension-Name", "world_heaven");
+        config.addDefault("Earth-Dimension-Name", "world");
         config.addDefault("Teleport-Message", "You are now in heaven");
         config.addDefault("Teleport-failed-Message", "You are already in heaven!");
         config.addDefault("Relative-teleport", false);
